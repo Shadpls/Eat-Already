@@ -83,7 +83,17 @@ class LoginForm(FlaskForm):
         if not existing_user_username:
             raise ValidationError("That username does not exist. Please try again.")
 
-
+class EatWhatForm(FlaskForm):
+    user_local = StringField(
+        validators=[InputRequired(), Length(min=2, max=30)],
+        render_kw={"placeholder": "Enter your location (city, zip-code)"},
+    )
+    category = StringField(
+        validators=[InputRequired(), Length(min=3, max=40)],
+        render_kw={"placeholder": "Enter a category (e.g. Italian, Chinese, etc)"},
+    )
+    submit = SubmitField("Decide for me")
+        
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -125,5 +135,36 @@ def signup():
 
     return render_template("signup.html", form=form)
 
+@app.route("/main", methods=["GET", "POST"])
+@login_required
+def main():
+    form = EatWhatForm()
+    if form.validate_on_submit():
+        user_local = form.user_local.data
+        category = form.category.data
+        decide_4me(user_local, category)
+    return render_template("main.html", form=form)
+
+def decide_4me(user_local, category):
+    
+    BASE_YELP_URL = "https://api.yelp.com/v3/businesses/search"
+    HEADERS = {'Authorization': 'Bearer %s' % getenv("FOOD_SELECTOR_API")}
+    PARAMS={'location' : user_local,
+            'term' : category,
+            'radius' : 6500, # need to convert miles to meters -> for submit field
+            'open_now' : True,
+            'limit' : 1, # depending on pure goal of app we want 1 or 3 #
+    }
+
+    yelp_response = requests.get(
+        BASE_YELP_URL, params=PARAMS, headers=HEADERS
+    )
+    addr = yelp_response.json()['businesses'][0]['location']['display_address']
+    img_url = yelp_response.json()['businesses'][0]['url']
+    phone = yelp_response.json()['businesses'][0]['display_phone']
+    rest_url = yelp_response.json()['businesses'][0]['url']
+    
+    eat_this_dict = {"Address": addr, "Image": img_url, "Phone": phone, "URL": rest_url}
+    print(eat_this_dict)
 
 # app.run()
