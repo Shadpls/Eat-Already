@@ -167,4 +167,4 @@ def decide_4me(user_local, category):
     eat_this_dict = {"Address": addr, "Image": img_url, "Phone": phone, "URL": rest_url}
     print(eat_this_dict)
 
-# app.run()
+app.run()
