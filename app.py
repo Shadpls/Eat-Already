@@ -126,4 +126,4 @@ def signup():
     return render_template("signup.html", form=form)
 
 
-# app.run()
+app.run()
