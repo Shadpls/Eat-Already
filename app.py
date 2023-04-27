@@ -244,4 +244,4 @@ def check_valid_location(location):
 
 
 # Uncomment to run locally comment back to deploy
-app.run(debug=True)
+# app.run(debug=True)
