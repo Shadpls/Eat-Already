@@ -1,0 +1,64 @@
+body {
+    background-color: #f8f8f8;
+  }
+  
+  #title {
+    font-size: 36px;
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  label {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  #submit-btn {
+    display: block;
+    background-color: #2ecc71;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  #submit-btn:hover {
+    background-color: #27ae60;
+  }
+  
+  #link {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #555;
+    font-size: 16px;
+    text-decoration: none;
+  }
+  
+  #link:hover {
+    color: #2ecc71;
+  }
