@@ -2,10 +2,12 @@
 
 ## Git Pull Requests
 Shad Pull requests:
-
+https://github.com/Shadpls/Eat-This/pull/18
+https://github.com/Shadpls/Eat-This/pull/13
 
 Carlos Pull requests:
-
+https://github.com/Shadpls/Eat-This/pull/19
+https://github.com/Shadpls/Eat-This/pull/4
 
 ## Project Planning 
 https://docs.google.com/document/d/10vNFhvdgkt07jA9OJ1Jqfl2g7t5K_5Wv4TH83JdwyYo/edit?usp=sharing
