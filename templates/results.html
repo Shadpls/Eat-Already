@@ -7,7 +7,12 @@
         <div>
             <h1 id = "name">{{name}}</h1>
             <h2 id = "addr">{{addr}}</h2>
+            <div><img src={{image}} width="200" height="200"></div>
+            <h2 id = "phone">{{phone}}</h2>
+            <a href="{{url}}">Link to Yelp</a>
             
+            <br>
+            <a href="{{url_for('search')}}">Go Back</a>
             <br>
             <a href="{{url_for('logout')}}">Press here to Logout</a>
 

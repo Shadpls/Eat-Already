@@ -152,6 +152,9 @@ def search():
         eat_this_dict = decide_4me(user_local, "")
         session["name"] = eat_this_dict["Name"]
         session["addr"] = eat_this_dict["Address"]
+        session["image"] = eat_this_dict["Image"]
+        session["phone"] = eat_this_dict["Phone"]
+        session["url"] = eat_this_dict["URL"]
         return redirect(url_for("results"))
     return render_template("search.html", form=form)
 
@@ -161,7 +164,12 @@ def search():
 def results():
     name = session.get("name")
     addr = session.get("addr")
-    return render_template("results.html", name=name, addr=addr)
+    image = session.get("image")
+    phone = session.get("phone")
+    url = session.get("url")
+    return render_template(
+        "results.html", name=name, addr=addr, image=image, url=url, phone=phone
+    )
 
 
 def decide_4me(user_local, category):
@@ -175,33 +183,15 @@ def decide_4me(user_local, category):
         "limit": 50,  # depending on pure goal of app we want 1 or 3 #
     }
 
-    # yelp_response = requests.get(BASE_YELP_URL, params=PARAMS, headers=HEADERS)
-    # addr = yelp_response.json()["businesses"][0]["location"]["display_address"]
-    # img_url = yelp_response.json()["businesses"][0]["url"]
-    # phone = yelp_response.json()["businesses"][0]["display_phone"]
-    # rest_url = yelp_response.json()["businesses"][0]["url"]
-    # name = yelp_response, json()["businesses"][0]["name"]
-
-    # eat_this_dict = {
-    #     "Name": name,
-    #     "Address": addr,
-    #     "Image": img_url,
-    #     "Phone": phone,
-    #     "URL": rest_url,
-    # }
-
     yelp_response = requests.get(BASE_YELP_URL, params=PARAMS, headers=HEADERS)
 
     data = yelp_response.json()
 
     restaurant = random.choice(data["businesses"])
 
-    print(restaurant["name"])
-    print(restaurant["location"]["address1"])
-
     addr = restaurant["location"]["display_address"]
     name = restaurant["name"]
-    img_url = restaurant["url"]
+    img_url = restaurant["image_url"]
     phone = restaurant["display_phone"]
     rest_url = restaurant["url"]
 
