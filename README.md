@@ -20,7 +20,7 @@ Collaboration on github experience. Made me excited for the real world, and lear
 
 ## Disliked:
 Fly.io not being a tool that can function on the school's network was a challenge with coordinting group work and turning the assignment in.
-Final set to deploy on campus 4/27 not working likely resulting in high penalty. Planning and being agead of time could address from a personal responsibility standpoint. Technology vetting sould also have been set up for higher likleyhood of success.
+Inability to work on campus presents challenges for all students, with varied network access.
 
 Limitations of ideas based on available API's
 
