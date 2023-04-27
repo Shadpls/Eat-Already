@@ -13,7 +13,7 @@ from flask_login import (
     logout_user,
     current_user,
 )
-from wtforms import StringField, PasswordField, SubmitField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError, NumberRange
 from wtforms.widgets import TextArea
 from flask_wtf import FlaskForm
@@ -90,6 +90,14 @@ class EatWhatForm(FlaskForm):
         validators=[InputRequired(), Length(min=2, max=30)],
         render_kw={"placeholder": "Enter your location (city, zip-code)"},
     )
+    category = SelectField(
+        validators=[InputRequired()],
+        choices=[("", "Type of food"), ("italian", "Italian"), ("chinese", "Chinese"), 
+                 ("mexican", "Mexican"), ("american", "American"), ("indian", "Indian"),
+                 ("japanese", "Japanese"), ("thai", "Thai"),("healthy", "Healthy")
+        ],
+        render_kw={"placeholder": "Select a category"},
+    )
     # category = StringField(
     #     validators=[InputRequired(), Length(min=3, max=40)],
     #     render_kw={"placeholder": "Enter a category (e.g. Italian, Chinese, etc)"},
@@ -145,8 +153,8 @@ def search():
     form = EatWhatForm()
     if form.validate_on_submit():
         user_local = form.user_local.data
-        # category = form.category.data
-        eat_this_dict = decide_4me(user_local, "")
+        category = form.category.data
+        eat_this_dict = decide_4me(user_local, category)
         session["name"] = eat_this_dict["Name"]
         session["addr"] = eat_this_dict["Address"]
         return redirect(url_for("results"))
@@ -168,7 +176,7 @@ def decide_4me(user_local, category):
         "location": str(user_local),
         "term": category,
         "radius": 6500,  # need to convert miles to meters -> for submit field
-        "open_now": True,
+        "open_now": "",
         "limit": 50,  # depending on pure goal of app we want 1 or 3 #
     }
 
