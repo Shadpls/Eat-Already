@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <link rel="stylesheet" href="static/style.css">
-    </head>
-    <body>
-        <div>
-            <h1 id = "name">{{name}}</h1>
-            <h2 id = "addr">{{addr}}</h2>
-            
-            <br>
-            <a href="{{url_for('logout')}}">Press here to Logout</a>
 
+<head>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+
+<body>
+    <div>
+        <h1 id="name">{{name}}</h1>
+        <h2 id="addr">{{addr}}</h2>
+        <div class="image-container">
+            <img src="{{ img_url }}" alt="Image">
         </div>
-    </body>
+
+        <br>
+        <a href="{{url_for('logout')}}">Press here to Logout</a>
+
+    </div>
+</body>
+
 </html>
