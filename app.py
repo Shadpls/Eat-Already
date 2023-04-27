@@ -13,7 +13,7 @@ from flask_login import (
     logout_user,
     current_user,
 )
-from wtforms import StringField, PasswordField, SubmitField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, IntegerField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError, NumberRange
 from wtforms.widgets import TextArea
 from flask_wtf import FlaskForm
@@ -89,10 +89,22 @@ class EatWhatForm(FlaskForm):
         validators=[InputRequired(), Length(min=2, max=30)],
         render_kw={"placeholder": "Enter your location (city, zip-code)"},
     )
-    # category = StringField(
-    #     validators=[InputRequired(), Length(min=3, max=40)],
-    #     render_kw={"placeholder": "Enter a category (e.g. Italian, Chinese, etc)"},
-    # )
+    category = SelectField(
+        validators=[],
+        choices=[
+            ("", "Food Type(Any)"),
+            ("italian", "Italian"),
+            ("chinese", "Chinese"),
+            ("mexican", "Mexican"),
+            ("american", "American"),
+            ("indian", "Indian"),
+            ("japanese", "Japanese"),
+            ("thai", "Thai"),
+            ("healthy", "Healthy"),
+        ],
+        render_kw={"placeholder": "Select a category"},
+    )
+
     submit = SubmitField("Decide for me")
 
 
