@@ -19,6 +19,7 @@ from wtforms.widgets import TextArea
 from flask_wtf import FlaskForm
 from flask_bcrypt import Bcrypt
 
+
 load_dotenv(find_dotenv())
 
 app = Flask(__name__)

@@ -1,18 +1,21 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
 
-{% block content %}
-<h1>Eat What?</h1>
-<p>Enter your location and a food category, and we'll decide where you should eat!</p>
-<form method="post" action="{{ url_for('decide_for_me') }}">
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-        {{ form.user_local.label }} {{ form.user_local(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.category.label }} {{ form.category(class_="form-control") }}
-    </div>
-    <div class="form-group">
-        {{ form.submit(class_="btn btn-primary") }}
-    </div>
-</form>
-{% endblock %}
+<head>
+    <title>Create a new post</title>
+</head>
+
+<body>
+    <h1>hey. EAT THIS!</h1>
+    <form method="POST">
+        <label for="location">Where you at!?:</label>
+        <input type="text" id="title" name="title" placeholder="Enter a location(city, or zip-code)"><br><br>
+        <label for="category">What you want?!:</label>
+        <input type="text" id="category" name="category" placeholder="e.g. Italian, Thai, etc."><br><br>
+        <label for="content">Content:</label><br>
+        <textarea id="content" name="content" rows="10" cols="50"></textarea><br><br>
+        <input type="submit" value="Create">
+    </form>
+</body>
+
+</html>
