@@ -145,6 +145,10 @@ def search():
     if form.validate_on_submit():
         user_local = form.user_local.data
         # category = form.category.data
+
+        if not check_valid_location(user_local):
+            return redirect(url_for("search"))
+
         eat_this_dict = decide_4me(user_local, "")
         session["name"] = eat_this_dict["Name"]
         session["addr"] = eat_this_dict["Address"]
@@ -164,10 +168,10 @@ def decide_4me(user_local, category):
     BASE_YELP_URL = "https://api.yelp.com/v3/businesses/search"
     HEADERS = {"Authorization": "Bearer %s" % getenv("FOOD_SELECTOR_API")}
     PARAMS = {
+        "term": "restaurant",
         "location": str(user_local),
         "term": category,
         "radius": 6500,  # need to convert miles to meters -> for submit field
-        "open_now": True,
         "limit": 50,  # depending on pure goal of app we want 1 or 3 #
     }
 
@@ -209,6 +213,32 @@ def decide_4me(user_local, category):
         "URL": rest_url,
     }
     return eat_this_dict
+
+
+def check_valid_location(location):
+    BASE_YELP_URL = "https://api.yelp.com/v3/businesses/search"
+    HEADERS = {"Authorization": "Bearer %s" % getenv("FOOD_SELECTOR_API")}
+    PARAMS = {"location": location, "term": "food"}
+
+    response = requests.get(BASE_YELP_URL, params=PARAMS, headers=HEADERS)
+
+    if response.ok:
+        data = response.json()
+        if data.get("businesses"):
+            return True  # Location is a valid city name
+
+    BASE_ZIP_URL = "https://www.zipcodeapi.com/rest/%s/info.json/%s/degrees" % (
+        getenv("ZIPCODE_API_KEY"),
+        location,
+    )
+
+    response = requests.get(BASE_ZIP_URL)
+    if response.ok:
+        data = response.json()
+        if data.get("city"):
+            return True  # Location is a valid zip code
+
+    return False  # Location is not valid city or zip code
 
 
 # Uncomment to run locally comment back to deploy
