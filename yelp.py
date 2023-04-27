@@ -18,11 +18,12 @@ def decide_4me():
     category = ""
     ########################
     PARAMS = {
+        "term": "restaurant",
         "location": user_local,
         "term": category,
         "radius": 6500,
         "open_now": True,
-        "limit": 1,  # depending on pure goal of app we want 1 or 3 #
+        "limit": 50,  # depending on pure goal of app we want 1 or 3 #
     }
 
     yelp_response = requests.get(BASE_YELP_URL, params=PARAMS, headers=HEADERS)
@@ -31,10 +32,10 @@ def decide_4me():
 
     restaurant = random.choice(data["businesses"])
 
-    print(data)
+    # print(data)
 
-    # print(restaurant["name"])
-    # print(restaurant["location"]["address1"])
+    print(restaurant["name"])
+    print(restaurant["location"]["address1"])
 
     addr = restaurant["location"]["display_address"]
     name = restaurant["name"]
