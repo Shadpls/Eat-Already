@@ -1,6 +1,6 @@
 from os import getenv
 from dotenv import load_dotenv, find_dotenv
-from flask import Flask, redirect, url_for, render_template, flash
+from flask import Flask, redirect, url_for, render_template, flash, session
 from flask_sqlalchemy import SQLAlchemy
 import json
 import random
@@ -84,17 +84,19 @@ class LoginForm(FlaskForm):
         if not existing_user_username:
             raise ValidationError("That username does not exist. Please try again.")
 
+
 class EatWhatForm(FlaskForm):
     user_local = StringField(
         validators=[InputRequired(), Length(min=2, max=30)],
         render_kw={"placeholder": "Enter your location (city, zip-code)"},
     )
-    category = StringField(
-        validators=[InputRequired(), Length(min=3, max=40)],
-        render_kw={"placeholder": "Enter a category (e.g. Italian, Chinese, etc)"},
-    )
+    # category = StringField(
+    #     validators=[InputRequired(), Length(min=3, max=40)],
+    #     render_kw={"placeholder": "Enter a category (e.g. Italian, Chinese, etc)"},
+    # )
     submit = SubmitField("Decide for me")
-        
+
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -108,7 +110,7 @@ def login():
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
-                return redirect(url_for("movie"))
+                return redirect(url_for("search"))
     user = Person.query.filter_by(username=form.username.data).first()
 
     return render_template("login.html", form=form)
@@ -136,36 +138,79 @@ def signup():
 
     return render_template("signup.html", form=form)
 
-@app.route("/main", methods=["GET", "POST"])
+
+@app.route("/search", methods=["GET", "POST"])
 @login_required
-def main():
+def search():
     form = EatWhatForm()
     if form.validate_on_submit():
         user_local = form.user_local.data
-        category = form.category.data
-        decide_4me(user_local, category)
-    return render_template("main.html", form=form)
+        # category = form.category.data
+        eat_this_dict = decide_4me(user_local, "")
+        session["name"] = eat_this_dict["Name"]
+        session["addr"] = eat_this_dict["Address"]
+        return redirect(url_for("results"))
+    return render_template("search.html", form=form)
+
+
+@app.route("/results", methods=["GET", "POST"])
+@login_required
+def results():
+    name = session.get("name")
+    addr = session.get("addr")
+    return render_template("results.html", name=name, addr=addr)
+
 
 def decide_4me(user_local, category):
-    
     BASE_YELP_URL = "https://api.yelp.com/v3/businesses/search"
-    HEADERS = {'Authorization': 'Bearer %s' % getenv("FOOD_SELECTOR_API")}
-    PARAMS={'location' : user_local,
-            'term' : category,
-            'radius' : 6500, # need to convert miles to meters -> for submit field
-            'open_now' : True,
-            'limit' : 1, # depending on pure goal of app we want 1 or 3 #
+    HEADERS = {"Authorization": "Bearer %s" % getenv("FOOD_SELECTOR_API")}
+    PARAMS = {
+        "location": str(user_local),
+        "term": category,
+        "radius": 6500,  # need to convert miles to meters -> for submit field
+        "open_now": True,
+        "limit": 50,  # depending on pure goal of app we want 1 or 3 #
     }
 
-    yelp_response = requests.get(
-        BASE_YELP_URL, params=PARAMS, headers=HEADERS
-    )
-    addr = yelp_response.json()['businesses'][0]['location']['display_address']
-    img_url = yelp_response.json()['businesses'][0]['url']
-    phone = yelp_response.json()['businesses'][0]['display_phone']
-    rest_url = yelp_response.json()['businesses'][0]['url']
-    
-    eat_this_dict = {"Address": addr, "Image": img_url, "Phone": phone, "URL": rest_url}
-    print(eat_this_dict)
+    # yelp_response = requests.get(BASE_YELP_URL, params=PARAMS, headers=HEADERS)
+    # addr = yelp_response.json()["businesses"][0]["location"]["display_address"]
+    # img_url = yelp_response.json()["businesses"][0]["url"]
+    # phone = yelp_response.json()["businesses"][0]["display_phone"]
+    # rest_url = yelp_response.json()["businesses"][0]["url"]
+    # name = yelp_response, json()["businesses"][0]["name"]
 
-app.run()
+    # eat_this_dict = {
+    #     "Name": name,
+    #     "Address": addr,
+    #     "Image": img_url,
+    #     "Phone": phone,
+    #     "URL": rest_url,
+    # }
+
+    yelp_response = requests.get(BASE_YELP_URL, params=PARAMS, headers=HEADERS)
+
+    data = yelp_response.json()
+
+    restaurant = random.choice(data["businesses"])
+
+    print(restaurant["name"])
+    print(restaurant["location"]["address1"])
+
+    addr = restaurant["location"]["display_address"]
+    name = restaurant["name"]
+    img_url = restaurant["url"]
+    phone = restaurant["display_phone"]
+    rest_url = restaurant["url"]
+
+    eat_this_dict = {
+        "Name": name,
+        "Address": addr,
+        "Image": img_url,
+        "Phone": phone,
+        "URL": rest_url,
+    }
+    return eat_this_dict
+
+
+# Uncomment to run locally comment back to deploy
+app.run(debug=True)
